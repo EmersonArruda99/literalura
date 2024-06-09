@@ -14,7 +14,7 @@ public class Livro {
     private String idioma;
     private double totalDeDownloads;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Autor autor;
 
     public Livro(){}

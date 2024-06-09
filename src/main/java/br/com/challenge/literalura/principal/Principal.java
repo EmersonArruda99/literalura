@@ -1,6 +1,8 @@
 package br.com.challenge.literalura.principal;
 
 import br.com.challenge.literalura.model.*;
+import br.com.challenge.literalura.repository.AutorRepository;
+import br.com.challenge.literalura.repository.LivroRepository;
 import br.com.challenge.literalura.service.ConsumoApi;
 import br.com.challenge.literalura.service.ConverteDados;
 
@@ -13,6 +15,15 @@ public class Principal {
 
     private Scanner leitura = new Scanner(System.in);
     private final String ENDERECO = "https://gutendex.com/books/?search=";
+    private LivroRepository repositorio;
+    private AutorRepository autorRepository;
+    private List<Livro> livros = new ArrayList<>();
+    private List<Autor> autors = new ArrayList<>();
+
+    public Principal(LivroRepository repositorio, AutorRepository autorRepository) {
+        this.repositorio = repositorio;
+        this.autorRepository = autorRepository;
+    }
 
 
     public void exibeMenu() {
@@ -42,16 +53,16 @@ public class Principal {
                     buscarLivroPeloTitulo();
                     break;
                 case 2:
-
+                    listarLivrosRegistrados();
                     break;
                 case 3:
-
+                    listarAutoresRegistrados();
                     break;
                 case 4:
-
+                    listarAutoresVivosEmUmDeterminadoAno();
                     break;
                 case 5:
-
+                    listarLivrosApartirDeUmIdioma();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -72,7 +83,7 @@ public class Principal {
         RespostaApi dados = conversor.obterDados(json, RespostaApi.class);
 
         // Converte os dados recebidos em uma lista de Livro
-        List<Livro> livros = dados.results().stream()
+        livros = dados.results().stream()
                 .map(Livro::new)
                 .collect(Collectors.toList());
 
@@ -92,26 +103,38 @@ public class Principal {
         }
     }
 
-//    var consumo = new ConsumoApi();
-//    var json = consumo.obterDados("https://gutendex.com/books/?search=dom+casmurro");
-//        System.out.println(json);
-//    var conversor = new ConverteDados();
-//    RespostaApi dados = conversor.obterDados(json, RespostaApi.class);
-//        System.out.println(dados);
-//
-//    List<Livro> livro = new ArrayList<>();
-//
-//    livro = dados.results().stream()
-//                .map(l -> new Livro(l))
-//            .collect(Collectors.toList());
-//
-//        System.out.println(livro);
-//
-//    List<Autor> autors = new ArrayList<>();
-//
-//    autors = livro.stream()
-//            .map(a -> a.getAutor())
-//            .collect(Collectors.toList());
-//
-//        System.out.println(autors);
+    private void listarLivrosRegistrados() {
+        livros = repositorio.findAll();
+        livros.stream()
+                .forEach(System.out::println);
+    }
+
+    private void listarAutoresRegistrados() {
+        autors = autorRepository.findAll();
+        autors.stream()
+                .forEach(System.out::println);
+    }
+
+    private void listarAutoresVivosEmUmDeterminadoAno() {
+        System.out.println("Informe o ano para a busca: ");
+        var anoEscolhido = leitura.nextInt();
+        List<Autor> autoresVivos = autorRepository.findByAnoDeFalecimentoGreaterThanEqual(anoEscolhido);
+
+        autoresVivos.stream()
+                .forEach(System.out::println);
+    }
+
+    private void listarLivrosApartirDeUmIdioma() {
+        System.out.println( """
+                            Qual idioma voce escolhe:
+                            - pt
+                            - en                             
+                            """);
+        var idiomaEscolhido = leitura.nextLine();
+        List<Livro> idiomaLivro = repositorio.findByIdiomaIsContainingIgnoreCase(idiomaEscolhido);
+
+        idiomaLivro.stream()
+                .forEach(System.out::println);
+
+    }
 }
