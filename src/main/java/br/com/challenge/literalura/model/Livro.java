@@ -17,6 +17,17 @@ public class Livro {
     @ManyToOne
     private Autor autor;
 
+    public Livro(){}
+
+    public Livro (DadosLivros dadosLivros){
+        this.titulo = dadosLivros.titulo();
+        if (dadosLivros.autor() != null && !dadosLivros.autor().isEmpty()){
+            this.autor = new Autor(dadosLivros.autor().get(0));
+        }
+        this.idioma = dadosLivros.linguagem().get(0);
+        this.totalDeDownloads = dadosLivros.totalDeDownloads();
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,5 +66,16 @@ public class Livro {
 
     public void setAutor(Autor autor) {
         this.autor = autor;
+    }
+
+    @Override
+    public String toString() {
+        return "********** Livro **********\n" +
+                " Titulo: " + titulo +
+                "\n Idioma: " + idioma +
+                "\n Autor: " + autor.getNome() +
+                "\n Numero de DownLoads: " + totalDeDownloads +
+                "\n***************************";
+
     }
 }

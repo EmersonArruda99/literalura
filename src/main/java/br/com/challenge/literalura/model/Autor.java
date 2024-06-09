@@ -2,7 +2,6 @@ package br.com.challenge.literalura.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +14,19 @@ public class Autor {
     private Long id;
 
     private String nome;
-    private LocalDate anoDeNascimento;
-    private LocalDate anoDeFalecimento;
+    private Integer anoDeNascimento;
+    private Integer anoDeFalecimento;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Livro> livros = new ArrayList<>();
 
+    public Autor(RespostaApi dados){}
+
+    public Autor(DadosAutor dadosAutor){
+        this.nome = dadosAutor.nome();
+        this.anoDeNascimento = dadosAutor.anoDeNascimento();
+        this.anoDeFalecimento = dadosAutor.anoDeFalecimento();
+    }
 
     public Long getId() {
         return id;
@@ -38,20 +44,20 @@ public class Autor {
         this.nome = nome;
     }
 
-    public LocalDate getAnoDeFalecimento() {
-        return anoDeFalecimento;
-    }
-
-    public void setAnoDeFalecimento(LocalDate anoDeFalecimento) {
-        this.anoDeFalecimento = anoDeFalecimento;
-    }
-
-    public LocalDate getAnoDeNascimento() {
+    public Integer getAnoDeNascimento() {
         return anoDeNascimento;
     }
 
-    public void setAnoDeNascimento(LocalDate anoDeNascimento) {
+    public void setAnoDeNascimento(Integer anoDeNascimento) {
         this.anoDeNascimento = anoDeNascimento;
+    }
+
+    public Integer getAnoDeFalecimento() {
+        return anoDeFalecimento;
+    }
+
+    public void setAnoDeFalecimento(Integer anoDeFalecimento) {
+        this.anoDeFalecimento = anoDeFalecimento;
     }
 
     public List<Livro> getLivros() {
@@ -62,4 +68,12 @@ public class Autor {
         this.livros = livros;
     }
 
+    @Override
+    public String toString() {
+        return "********** Autor *********\n" +
+                " Nome: " + nome +
+                "\n Ano De Nascimento: " + anoDeNascimento +
+                "\n Ano De Falecimento: " + anoDeFalecimento +
+                "\n**************************";
+    }
 }
