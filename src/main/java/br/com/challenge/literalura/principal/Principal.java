@@ -81,6 +81,7 @@ public class Principal {
         var json = consumo.obterDados(ENDERECO + nomeLivro.replace(" ", "+"));
         var conversor = new ConverteDados();
         RespostaApi dados = conversor.obterDados(json, RespostaApi.class);
+        //asaa
 
         // Converte os dados recebidos em uma lista de Livro
         livros = dados.results().stream()
